@@ -44,19 +44,20 @@ class ActorManager:
         row = self.cursor.fetchone()
         return Actor(*row) if row else None
 
-    def update(self, actor: Actor):
+    def update(self, pk: int, new_first_name: str, new_last_name: str):
         query = (
             f"UPDATE {self.table_name} "
             f"SET first_name = ?, last_name = ? "
             f"WHERE id = ?"
         )
-        params = (actor.first_name, actor.last_name, actor.id)
+        params = (new_first_name, new_last_name, pk)
         self.cursor.execute(query, params)
         self.conn.commit()
 
-    def delete(self, actor_id: int):
-        self.cursor.execute(
-            f"DELETE FROM {self.table_name} WHERE id = ?",
-            (actor_id,)
+    def delete(self, pk: int):
+        query = (
+            f"DELETE FROM {self.table_name} "
+            f"WHERE id = ?"
         )
+        self.cursor.execute(query, (pk,))
         self.conn.commit()
