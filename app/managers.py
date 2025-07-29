@@ -20,7 +20,7 @@ class ActorManager:
         self.cursor.execute(query)
         self.conn.commit()
 
-    def create(self, first_name: str, last_name: str):
+    def create(self, first_name: str, last_name: str) -> Actor:
         query = (
             f"INSERT INTO {self.table_name} "
             f"(first_name, last_name) "
@@ -28,6 +28,7 @@ class ActorManager:
         )
         self.cursor.execute(query, (first_name, last_name))
         self.conn.commit()
+        return self.get(self.cursor.lastrowid)
 
     def all(self) -> list[Actor]:
         query = f"SELECT * FROM {self.table_name}"
@@ -54,10 +55,11 @@ class ActorManager:
         self.cursor.execute(query, params)
         self.conn.commit()
 
-    def delete(self, pk: int):
+    def delete(self, pk: int) -> bool:
         query = (
             f"DELETE FROM {self.table_name} "
             f"WHERE id = ?"
         )
         self.cursor.execute(query, (pk,))
         self.conn.commit()
+        return self.cursor.rowcount > 0
