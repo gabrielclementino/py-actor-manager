@@ -11,21 +11,22 @@ class ActorManager:
         self._create_table()
 
     def _create_table(self):
-        self.cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS {self.table_name} (
-                id INTEGER PRIMARY KEY,
-                first_name TEXT NOT NULL,
-                last_name TEXT NOT NULL
-            )
-        ''')
+        query = (
+            f"CREATE TABLE IF NOT EXISTS {self.table_name} ("
+            f"id INTEGER PRIMARY KEY, "
+            f"first_name TEXT NOT NULL, "
+            f"last_name TEXT NOT NULL)"
+        )
+        self.cursor.execute(query)
         self.conn.commit()
 
     def create(self, first_name: str, last_name: str):
-        self.cursor.execute(
+        query = (
             f"INSERT INTO {self.table_name} "
-            f"(first_name, last_name) VALUES (?, ?)",
-            (first_name, last_name)
+            f"(first_name, last_name) "
+            f"VALUES (?, ?)"
         )
+        self.cursor.execute(query, (first_name, last_name))
         self.conn.commit()
 
     def all(self) -> list[Actor]:
