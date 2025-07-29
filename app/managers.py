@@ -1,6 +1,7 @@
 import sqlite3
 from app.models import Actor
 
+
 class ActorManager:
     def __init__(self, db_path: str):
         self.conn = sqlite3.connect(db_path)
