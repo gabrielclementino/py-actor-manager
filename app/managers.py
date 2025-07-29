@@ -20,26 +20,33 @@ class ActorManager:
         ''')
         self.conn.commit()
 
-    def create(self, actor: Actor):
+    def create(self, first_name: str, last_name: str):
         self.cursor.execute(
-            f"INSERT INTO {self.table_name} (id, first_name, last_name) VALUES (?, ?, ?)",
-            (actor.id, actor.first_name, actor.last_name)
+            f"INSERT INTO {self.table_name} "
+            f"(first_name, last_name) VALUES (?, ?)",
+            (first_name, last_name)
         )
         self.conn.commit()
 
+    def all(self) -> list[Actor]:
+        self.cursor.execute(f"SELECT * FROM {self.table_name}")
+        rows = self.cursor.fetchall()
+        return [Actor(*row) for row in rows]
+
     def get(self, actor_id: int) -> Actor:
-        self.cursor.execute(
-            f"SELECT * FROM {self.table_name} WHERE id = ?",
-            (actor_id,)
-        )
+        query = f"SELECT * FROM {self.table_name} WHERE id = ?"
+        self.cursor.execute(query, (actor_id,))
         row = self.cursor.fetchone()
         return Actor(*row) if row else None
 
     def update(self, actor: Actor):
-        self.cursor.execute(
-            f"UPDATE {self.table_name} SET first_name = ?, last_name = ? WHERE id = ?",
-            (actor.first_name, actor.last_name, actor.id)
+        query = (
+            f"UPDATE {self.table_name} "
+            f"SET first_name = ?, last_name = ? "
+            f"WHERE id = ?"
         )
+        params = (actor.first_name, actor.last_name, actor.id)
+        self.cursor.execute(query, params)
         self.conn.commit()
 
     def delete(self, actor_id: int):
