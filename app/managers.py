@@ -29,12 +29,16 @@ class ActorManager:
         self.conn.commit()
 
     def all(self) -> list[Actor]:
-        self.cursor.execute(f"SELECT * FROM {self.table_name}")
+        query = f"SELECT * FROM {self.table_name}"
+        self.cursor.execute(query)
         rows = self.cursor.fetchall()
         return [Actor(*row) for row in rows]
 
     def get(self, actor_id: int) -> Actor:
-        query = f"SELECT * FROM {self.table_name} WHERE id = ?"
+        query = (
+            f"SELECT * FROM {self.table_name} "
+            f"WHERE id = ?"
+        )
         self.cursor.execute(query, (actor_id,))
         row = self.cursor.fetchone()
         return Actor(*row) if row else None
